@@ -27,12 +27,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenFilter jwtTokenFilter;
 
     private static final String[] PERMIT_ALL = {
-            "/auth/**"
+            "/auth/**",
+            "/swagger-ui/index.html**",
+            "/swagger-ui/index.html#/",
+            "/**"
     };
 
     private static final String[] IGNORE = {
-            "/account-swagger/api-docs",
-            "/swagger-ui.html"
+            "/account-swagger/api-docs"
     };
 
     @Override
