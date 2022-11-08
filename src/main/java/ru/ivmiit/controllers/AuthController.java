@@ -10,9 +10,12 @@ import ru.ivmiit.dto.request.SignUpRequest;
 import ru.ivmiit.dto.response.AuthResponse;
 import ru.ivmiit.services.AuthService;
 
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(//origins ="http://localhost:5173/",
+//        allowedHeaders = "origin",
+        exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
 public class AuthController {
     private final AuthService authService;
 
@@ -20,7 +23,9 @@ public class AuthController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public AuthResponse signIn(@RequestBody AuthRequest authRequestDto) {
-        return authService.authenticate(authRequestDto);
+        AuthResponse response = authService.authenticate(authRequestDto);
+        System.out.println(response);
+        return response;
     }
 
     @PostMapping(path ="/refresh-token", produces = MediaType.APPLICATION_JSON_VALUE,
@@ -30,6 +35,7 @@ public class AuthController {
         return authService.updateAccessTokenWithRefreshToken(tokenRequest);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "/sign-up", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public AuthResponse signUp(@RequestBody SignUpRequest request) {

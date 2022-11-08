@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.ivmiit.dto.request.ProductRequest;
@@ -17,8 +18,10 @@ import ru.ivmiit.services.ProductService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 @RequiredArgsConstructor
+@CrossOrigin(
+        exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
 public class ProductController {
 
     private final ProductService productService;
@@ -50,12 +53,14 @@ public class ProductController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
     public ProductResponse saveProduct(@RequestBody ProductRequest request) {
         return productService.addProduct(request);
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasRole('ADMIN')")
     public ProductResponse updateProductById(@PathVariable Long id, @RequestBody ProductRequest request) {
         return productService.updateProductById(id, request);

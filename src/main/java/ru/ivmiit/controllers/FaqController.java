@@ -1,6 +1,7 @@
 package ru.ivmiit.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.ivmiit.dto.request.FaqRequest;
@@ -10,8 +11,10 @@ import ru.ivmiit.services.FaqService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/faq")
+@RequestMapping("/api/faq")
 @RequiredArgsConstructor
+@CrossOrigin(
+        exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
 public class FaqController {
     private final FaqService faqService;
 
@@ -26,6 +29,7 @@ public class FaqController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
     public FaqResponse saveFaq(@RequestBody FaqRequest request){
         return faqService.addFaq(request);
@@ -33,6 +37,7 @@ public class FaqController {
 
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasRole('ADMIN')")
     public FaqResponse updateFaq(@PathVariable Long id, @RequestBody FaqRequest request){
         return faqService.updateFaqById(id, request);

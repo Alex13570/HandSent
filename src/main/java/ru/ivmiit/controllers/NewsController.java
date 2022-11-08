@@ -1,6 +1,7 @@
 package ru.ivmiit.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.ivmiit.dto.request.FaqRequest;
@@ -12,8 +13,10 @@ import ru.ivmiit.services.NewsService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/news")
+@RequestMapping("/api/news")
 @RequiredArgsConstructor
+@CrossOrigin(
+        exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
 public class NewsController {
 
     private final NewsService newsService;
@@ -30,6 +33,7 @@ public class NewsController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
     public NewsResponse saveNews(@RequestBody NewsRequest request){
         return newsService.addNews(request);
     }
@@ -37,6 +41,7 @@ public class NewsController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public NewsResponse updateNews(@PathVariable Long id, @RequestBody NewsRequest request){
         return newsService.updateNewsById(id, request);
     }

@@ -55,12 +55,13 @@ class HandSentApplicationTest {
         ResponseEntity<String> response = restTemplate.exchange("/products", HttpMethod.GET,
                 request, new ParameterizedTypeReference<>() {});
 
-        System.out.println(response.getBody());
+        List<ProductEntity> currentList = productRepository.findAll();
+        ProductEntity currentProduct = currentList.get(currentList.size()-1);
         List<ProductResponse> productList = mapper.readValue(response.getBody(), new TypeReference<List<ProductResponse>>(){});
         System.out.println(productList.get(0).getTitle());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
-        assertThat(productList.size(), is(2));
-        assertThat(productList.get(0).getTitle(), is("promotion"));
+        assertThat(productList.size(), is(currentList.size()));
+        assertThat(productList.get(productList.size()-1).getTitle(), is(currentProduct.getTitle()));
     }
 
 
@@ -71,17 +72,19 @@ class HandSentApplicationTest {
 
         String requestJson = "";
         request = new HttpEntity<String>(requestJson, headers);
-        ResponseEntity<String> response = restTemplate.exchange("/products/2", HttpMethod.GET,
+        List<ProductEntity> currentList = productRepository.findAll();
+        ProductEntity currentProduct = currentList.get(currentList.size()-1);
+        Long currend_id = currentProduct.getId();
+        ResponseEntity<String> response = restTemplate.exchange("/products/" + currend_id.toString(), HttpMethod.GET,
                 request, new ParameterizedTypeReference<>() {});
 
         ProductResponse product = g.fromJson(response.getBody(), ProductResponse.class);
-        System.out.println(product.getTitle());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
-        assertThat(product.getTitle(), is("promotion"));
+        assertThat(product.getTitle(), is(currentProduct.getTitle()));
     }
 
     @Test
-    public void saveProductStatus200() throws JsonProcessingException {
+    public void saveProductStatus201() throws JsonProcessingException {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", TOKEN);
 
@@ -94,29 +97,34 @@ class HandSentApplicationTest {
                 request, new ParameterizedTypeReference<>() {});
 
         ProductResponse product = g.fromJson(response.getBody(), ProductResponse.class);
-        System.out.println(response.getStatusCode());
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+
+
+        assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(product.getTitle(), is("guitar"));
     }
 
     @Test
-    public void updateProductStatus200() throws JsonProcessingException {
+    public void updateProductStatus202() throws JsonProcessingException {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", TOKEN);
 
+        List<ProductEntity> currentList = productRepository.findAll();
+        ProductEntity currentProduct = currentList.get(currentList.size()-1);
+        Long currend_id = currentProduct.getId();
+
         JSONObject json = new JSONObject();
         json.put("title", "guitar");
-        json.put("price", 40000);
+        json.put("price", 40001);
         json.put("description", "very good rock guitar");
 
         request = new HttpEntity<String>(json.toString(), headers);
-        ResponseEntity<String> response = restTemplate.exchange("/products/8", HttpMethod.PUT,
+        ResponseEntity<String> response = restTemplate.exchange("/products/" + currend_id.toString(), HttpMethod.PUT,
                 request, new ParameterizedTypeReference<>() {});
 
         ProductResponse product = g.fromJson(response.getBody(), ProductResponse.class);
-        System.out.println(response.getStatusCode());
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
-        assertThat(product.getPrice(), is(40000));
+
+        assertThat(response.getStatusCode(), is(HttpStatus.ACCEPTED));
+        assertThat(product.getPrice(), is(40001));
     }
 
     @Test
@@ -124,10 +132,30 @@ class HandSentApplicationTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", TOKEN);
 
+        List<ProductEntity> currentList = productRepository.findAll();
+        ProductEntity currentProduct = currentList.get(currentList.size()-1);
+        Long currend_id = currentProduct.getId();
+
         request = new HttpEntity<String>("", headers);
-        ResponseEntity<String> response = restTemplate.exchange("/products/8", HttpMethod.DELETE,
+        ResponseEntity<String> response = restTemplate.exchange("/products/" + currend_id.toString(), HttpMethod.DELETE,
                 request, new ParameterizedTypeReference<>() {});
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
+    public void deleteProductStatus404() throws JsonProcessingException {
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", TOKEN);
+
+        List<ProductEntity> currentList = productRepository.findAll();
+        ProductEntity currentProduct = currentList.get(currentList.size()-1);
+        Long currend_id = currentProduct.getId();
+
+        request = new HttpEntity<String>("", headers);
+        ResponseEntity<String> response = restTemplate.exchange("/products/" + currend_id.toString() + "1", HttpMethod.DELETE,
+                request, new ParameterizedTypeReference<>() {});
+
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }
 }
