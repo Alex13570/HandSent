@@ -6,14 +6,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.time.Instant;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ErrorResponse {
 
-    private HttpStatus status;
+    private Integer status;
 
     private String message;
+
+    private String path;
+
+    private String exceptionName;
+
+    private Instant timeStamp;
 
 }

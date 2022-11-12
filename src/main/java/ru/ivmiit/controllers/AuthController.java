@@ -13,8 +13,7 @@ import ru.ivmiit.services.AuthService;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(//origins ="http://localhost:5173/",
-//        allowedHeaders = "origin",
+@CrossOrigin(//origins ="http://localhost:5173/", allowedHeaders = "origin",
         exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
 public class AuthController {
     private final AuthService authService;
