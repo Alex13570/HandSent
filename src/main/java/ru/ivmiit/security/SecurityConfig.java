@@ -34,8 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     private final JwtTokenFilter jwtTokenFilter;
 
     private static final String[] PERMIT_ALL = {
-            "/auth/**",
-            "/**"
+            "/api/auth/**"
     };
 
     private static final String[] IGNORE = {
@@ -48,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .logout().disable()
                 .formLogin().disable()
                 .csrf().disable()
-                .cors().disable()
+                .cors().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
         .authorizeHttpRequests().antMatchers(PERMIT_ALL).permitAll()
         .anyRequest().authenticated().and()
@@ -64,17 +63,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
-    }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173/"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin"
-                                                ,"Access-Control-Allow-Credentials"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 }

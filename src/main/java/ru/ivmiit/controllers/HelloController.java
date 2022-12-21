@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/")
-@CrossOrigin(
-        exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
+@CrossOrigin(origins = {"${settings.cors_origin}"})
 public class HelloController {
 
     @GetMapping

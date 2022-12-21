@@ -13,8 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/faq")
 @RequiredArgsConstructor
-@CrossOrigin(
-        exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
+@CrossOrigin(origins = {"${settings.cors_origin}"})
 public class FaqController {
     private final FaqService faqService;
 

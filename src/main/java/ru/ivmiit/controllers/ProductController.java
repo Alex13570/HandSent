@@ -7,7 +7,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.ivmiit.dto.request.ProductRequest;
@@ -15,13 +18,13 @@ import ru.ivmiit.dto.response.ProductResponse;
 import ru.ivmiit.models.ProductEntity;
 import ru.ivmiit.services.ProductService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-@CrossOrigin(
-        exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
+@CrossOrigin(origins = {"${settings.cors_origin}"})
 public class ProductController {
 
     private final ProductService productService;
@@ -33,7 +36,7 @@ public class ProductController {
                             array = @ArraySchema(schema = @Schema(implementation = ProductResponse.class))) }),
             @ApiResponse(responseCode = "403", description = "User is Not Authorized",
                     content = @Content) })
-    @GetMapping
+    @GetMapping()
     public List<ProductResponse> getAllProducts() {
         return productService.findAllProducts();
     }
@@ -49,6 +52,7 @@ public class ProductController {
                     content = @Content) })
     @GetMapping("/{id}")
     public ProductResponse getProductById(@PathVariable Long id) {
+        System.out.println("i am here");
         return productService.findById(id);
     }
 

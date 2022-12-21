@@ -12,8 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
-@CrossOrigin(
-        exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
+@CrossOrigin(origins = {"${settings.cors_origin}"})
 public class OrderController {
 
     private final OrderService orderService;

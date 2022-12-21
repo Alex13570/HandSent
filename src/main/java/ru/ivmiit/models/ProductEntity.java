@@ -17,6 +17,7 @@ public class ProductEntity extends BaseEntity {
 
     private String title;
 
+    @Column(columnDefinition = "varchar(1000)")
     private String description;
 
     @Column(columnDefinition = "decimal(10,2)")

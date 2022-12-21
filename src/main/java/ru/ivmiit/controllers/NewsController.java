@@ -15,8 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/news")
 @RequiredArgsConstructor
-@CrossOrigin(
-        exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
+@CrossOrigin(origins = {"${settings.cors_origin}"})
 public class NewsController {
 
     private final NewsService newsService;
